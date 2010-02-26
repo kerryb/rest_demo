@@ -1,0 +1,78 @@
+#!/usr/bin/env ruby
+#
+##########################################################################
+#                                                                        #
+# This file is part of the nimbus rails template: DO NOT UPDATE MANUALLY #
+#                                                                        #
+# To update, run 'rake template'                                         #
+#                                                                        #
+##########################################################################
+
+require File.dirname(__FILE__) + '/../config/environment'
+
+unless defined?(Backup::BUCKET_NAME)
+  puts <<EOF
+
+***************************************************************************
+*                                                                         *
+*  To run the backup script you need to configure the name of an existing *
+*  bucket where the backups will be created in production.rb              *
+*                                                                         *
+***************************************************************************
+
+EOF
+  exit 1
+end
+
+RAILS_DEFAULT_LOGGER.info "Attempting to backup to bucket #{Backup::BUCKET_NAME}"
+
+ENV['AWS_ACCESS_KEY_ID'] = Backup::AWS_ACCESS_KEY_ID
+ENV['AWS_SECRET_ACCESS_KEY'] = Backup::AWS_SECRET_ACCESS_KEY
+
+aws_uri = URI.parse(Backup::AWS_S3_URI)
+ENV['AWS_S3_HOST'] = aws_uri.host
+ENV['AWS_S3_PORT'] = aws_uri.port.to_s
+ENV['AWS_S3_VIRTUAL_PATH'] = aws_uri.path
+ENV['AWS_CALLING_FORMAT'] = "REGULAR"
+ENV['HTTP_PROXY_HOST'] = Backup::HTTP_PROXY_HOST if Backup::HTTP_PROXY_HOST.present?
+ENV['HTTP_PROXY_PORT'] = Backup::HTTP_PROXY_PORT if Backup::HTTP_PROXY_PORT.present?
+
+
+files_to_keep = 14
+bucket_name = Backup::BUCKET_NAME
+date = Time.now.strftime("%Y%m%d")
+tmp_dir = "/tmp/#{bucket_name}-#{date}"
+FileUtils.mkdir_p "#{tmp_dir}/log"
+system %(cd #{RAILS_ROOT}/../../shared; cp -r ./log/* #{tmp_dir}/log)
+FileUtils.mkdir_p "#{tmp_dir}/config"
+system %(cd #{RAILS_ROOT}/../../shared; cp -r ./config/* #{tmp_dir}/config)
+if (File.exists?("#{RAILS_ROOT}/../../shared/views"))
+  FileUtils.mkdir_p "#{tmp_dir}/views"
+  system %(cd #{RAILS_ROOT}/../../shared; cp -r ./views/* #{tmp_dir}/views)
+end
+if (File.exists?("#{RAILS_ROOT}/../../shared/uploads"))
+  FileUtils.mkdir_p "#{tmp_dir}/uploads"
+  system %(cd #{RAILS_ROOT}/../../shared; cp -r ./uploads/* #{tmp_dir}/uploads)
+end
+
+dbfile = YAML.load_file("#{RAILS_ROOT}/config/database.yml")
+production_database = dbfile["production"]["database"]
+system %(pg_dump -i #{production_database}> #{tmp_dir}/database.sql)
+system %(cd /tmp; tar czf #{bucket_name}-#{date}.tgz ./#{bucket_name}-#{date}/*)
+FileUtils.rm_rf tmp_dir
+
+# copy the tarball onto the right S3 storage
+system "s3cmd put #{bucket_name}:#{date}.tgz /tmp/#{bucket_name}-#{date}.tgz"
+#
+# remove the tarball from the local machine
+FileUtils.rm_f "/tmp/#{bucket_name}-#{date}.tgz"
+
+# remove any 'old' tarballs from the s3 storage
+buckets = `s3cmd list #{bucket_name} | sort -r`
+bucket_list = buckets.split("\n")
+bucket_list = bucket_list.reject {|b| b !~ /\d{8}/ }[files_to_keep..-1]
+bucket_list && bucket_list.each do |bucket_key|
+  `s3cmd delete #{bucket_name}:#{bucket_key}`
+end
+
+RAILS_DEFAULT_LOGGER.info "Backup to bucket #{Backup::BUCKET_NAME} complete"

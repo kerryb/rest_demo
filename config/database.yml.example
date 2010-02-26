@@ -1,0 +1,25 @@
+
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: rest_demo_development
+  username: rest_demo
+  password:
+
+test: &TEST
+  adapter: postgresql
+  encoding: unicode
+  database: rest_demo_test
+  username: rest_demo
+  password:
+
+cucumber:
+  <<: *TEST
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: rest_demo_production
+  username: rest_demo
+  password:
+

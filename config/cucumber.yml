@@ -1,0 +1,2 @@
+ok: features --strict --tags ~@wip --format progress --format html --out log/features_ok.html
+wip: features --tags @wip --wip --format progress --format html --out log/features_wip.html

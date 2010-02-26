@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require 'erb'
+
+config_template = <<-"EOT"
+# Rotate Rails application logs
+<%= ARGV[0] %>/log/*.log {
+  daily
+  missingok
+  rotate 7
+  compress
+  delaycompress
+  copytruncate
+}
+EOT
+
+config = ERB.new(config_template).result(binding)
+
+
+system "echo '#{config}' > #{ARGV[1]}"
+
