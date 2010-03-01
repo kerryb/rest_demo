@@ -10,6 +10,13 @@ Then %r{^the response status should be "(.*)"$} do |code|
   response.status.should == code
 end
 
+Then %r{^the response should be an XML document matching:$} do |table|
+  doc = Nokogiri::XML(response.body)
+  table.hashes.each do |hash|
+    doc.xpath(hash["xpath"]).text.should == hash["value"]
+  end
+end
+
 Then %r{^the response should be an XML error "([^\"]*)"$} do |message|
   doc = Nokogiri::XML(response.body)
   doc.xpath("/error").map(&:text).should == [message]

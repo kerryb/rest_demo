@@ -1,6 +1,6 @@
 Feature: REST interface
 
-  Scenario: Placing an order
+  Scenario: Viewing products
     Given the following products exist:
       | code | description        | price |
       | a001 | Left-handed widget | 1.23  |
@@ -8,3 +8,6 @@ Feature: REST interface
     When I GET /products
     Then the response status should be "200 OK"
     And the response content type should be "application/vnd.rest-example.products+xml"
+    And the response should be an XML document matching:
+      | xpath                     | value |
+      | /products/product[1]/code | a001  |
