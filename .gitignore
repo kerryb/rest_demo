@@ -1,6 +1,5 @@
 bin
 gems/*
-!gems/cache
 !gems/bundler
 database.yml
 restart.txt
