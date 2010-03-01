@@ -11,7 +11,7 @@ describe ProductsController do
       assigns[:products].should == @products
     end
 
-    it "renders the product index view" do
+    it "renders the index view" do
       response.should render_template("index.xml.builder")
     end
 
