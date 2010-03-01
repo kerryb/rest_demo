@@ -9,5 +9,10 @@ Feature: REST interface
     Then the response status should be "200 OK"
     And the response content type should be "application/vnd.rest-example.products+xml"
     And the response should be an XML document matching:
-      | xpath                     | value |
-      | /products/product[1]/code | a001  |
+      | xpath                            | value              |
+      | /products/product[1]/code        | a001               |
+      | /products/product[1]/description | Left-handed widget |
+      | /products/product[1]/price       | £1.23              |
+      | /products/product[2]/code        | a002               |
+      | /products/product[2]/description | Tartan paint       |
+      | /products/product[2]/price       | £3.50              |
