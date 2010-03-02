@@ -2,10 +2,10 @@ When %r{^I GET ([^\"]*)$} do |uri|
   visit uri
 end
 
-When %r{^I follow the "([^\"]*)" link$} do |label|
+When %r{^I follow the (?:first )?"([^\"]*)" link$} do |label|
   doc = Nokogiri::XML(response.body)
   link = doc.xpath("//link[@rel='#{label}']").first
-  visit link.attributes["href"]
+  visit link.attributes["href"].text
 end
 
 Then %r{^the response content type should be "([^\"]*)"$} do |content_type|

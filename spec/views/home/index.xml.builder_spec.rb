@@ -13,4 +13,10 @@ describe "home/index.xml.builder" do
   it "renders a products link" do
     response.should have_tag("link[rel=products][method=get][href=#{products_url}]")
   end
+
+  it "renders an orders link" do
+    pending do
+      response.should have_tag("link[rel=orders][method=get][href=#{orders_url}]")
+    end
+  end
 end
