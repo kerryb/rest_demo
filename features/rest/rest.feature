@@ -27,3 +27,9 @@ Feature: REST interface
       | /product/code        | a001               |
       | /product/description | Left-handed widget |
       | /product/price       | £1.23              |
+
+  Scenario: Creating and placing an order
+    When I go to the home page
+    And I follow the "orders" link
+    Then the response status should be "200 OK"
+    And the response content type should be "application/vnd.rest-example.orders+xml"
