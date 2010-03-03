@@ -1,5 +1,6 @@
 xml.instruct!
-xml.product :self => product_url(@product) do
+xml.product do
+  xml.link :rel => "latest", :method => "get", :href => product_url(@product)
   xml.code @product.code
   xml.description @product.description
   xml.price number_to_currency(@product.price, :unit => "")

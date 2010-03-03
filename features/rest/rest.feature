@@ -22,6 +22,9 @@ Feature: REST interface
       | /products/product[2]/code        | a002               |
       | /products/product[2]/description | Tartan paint       |
       | /products/product[2]/price       | 3.50               |
+    And there should be a "latest" link:
+      | href   | <%= products_url %> |
+      | method | get                 |
     And there should be a "view" link:
       | href   | <%= product_url(Product.find_by_code("a001")) %> |
       | method | get                                              |
@@ -36,6 +39,9 @@ Feature: REST interface
       | /product/code        | a001               |
       | /product/description | Left-handed widget |
       | /product/price       | 1.23               |
+    And there should be a "latest" link:
+      | href   | <%= product_url(Product.find_by_code("a001")) %> |
+      | method | get                 |
 
   Scenario: Creating and placing an order
     When I go to the home page
@@ -45,6 +51,9 @@ Feature: REST interface
     When I follow the "orders" link
     Then the response status should be "200 OK"
     And the response content type should be "application/vnd.rest-example.orders+xml"
+    Then there should be a "latest" link:
+      | href   | <%= orders_url %> |
+      | method | get               |
     Then there should be a "new" link:
       | href   | <%= orders_url %>                      |
       | type   | application/vnd.rest-example.order+xml |

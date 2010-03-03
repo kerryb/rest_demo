@@ -8,7 +8,8 @@ describe "products/show.xml.builder" do
   end
 
   it "renders a product" do
-    response.should have_tag("product[self=#{product_url(@product)}]") do
+    response.should have_tag("product") do
+      with_tag "link[rel=latest][method=get][href=#{product_url(@product)}]"
       with_tag "code", :text => @product.code
       with_tag "description", :text => @product.description
       with_tag "price", :text => number_to_currency(@product.price, :unit => "")

@@ -8,12 +8,9 @@ describe "products/index.xml.builder" do
     render "/products/index.xml.builder"
   end
 
-  it "renders a products element with a URI" do
-    response.should have_tag("products[self=#{products_url}]")
-  end
-
   it "renders a list of products" do
     response.should have_tag("products") do
+      with_tag "link[rel=latest][method=get][href=#{products_url}]"
       with_tag "product", :count => 2
       with_tag "product:first-of-type" do
         with_tag "link[rel=view][method=get][href=#{product_url(@product_1)}]"

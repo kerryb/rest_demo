@@ -1,5 +1,6 @@
 xml.instruct!
-xml.products(:self => products_url) do
+xml.products do
+  xml.link :rel => "latest", :method => "get", :href => products_url
   @products.each do |product|
     xml.product do
       xml.link :rel => "view", :method => "get", :href => product_url(product)
