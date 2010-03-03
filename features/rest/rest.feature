@@ -18,10 +18,10 @@ Feature: REST interface
       | xpath                            | value              |
       | /products/product[1]/code        | a001               |
       | /products/product[1]/description | Left-handed widget |
-      | /products/product[1]/price       | £1.23              |
+      | /products/product[1]/price       | 1.23               |
       | /products/product[2]/code        | a002               |
       | /products/product[2]/description | Tartan paint       |
-      | /products/product[2]/price       | £3.50              |
+      | /products/product[2]/price       | 3.50               |
     And there should be a "view" link:
       | href   | <%= product_url(Product.find_by_code("a001")) %> |
       | method | get                                              |
@@ -35,7 +35,7 @@ Feature: REST interface
       | xpath                | value              |
       | /product/code        | a001               |
       | /product/description | Left-handed widget |
-      | /product/price       | £1.23              |
+      | /product/price       | 1.23               |
 
   Scenario: Creating and placing an order
     When I go to the home page
