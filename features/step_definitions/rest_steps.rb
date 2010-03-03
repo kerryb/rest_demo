@@ -3,16 +3,24 @@ When %r{^I GET ([^\"]*)$} do |uri|
 end
 
 When %r{^I follow the (?:first )?"([^\"]*)" link$} do |label|
+  When %{I follow the "#{label}" link with:}, ""
+end
+
+When %r{^I follow the "([^\"]*)" link with:$} do |label, body|
   doc = Nokogiri::XML(response.body)
   link = doc.xpath("//link[@rel='#{label}']").first
-  visit link.attributes["href"].text
+  visit link.attributes["href"].text, link.attribute("method")
 end
 
 Then %r{^the response content type should be "([^\"]*)"$} do |content_type|
   response.content_type.should == content_type
 end
 
-Then %r{^the response status should be "(.*)"$} do |code|
+Then %r{^the response should have a "([^\"]*)" header$} do |header|
+  response.headers.should have_key(header)
+end
+
+Then %r{^the response status should be "([^\"]*)"$} do |code|
   response.status.should == code
 end
 

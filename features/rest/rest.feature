@@ -41,7 +41,7 @@ Feature: REST interface
       | /product/price       | 1.23               |
     And there should be a "latest" link:
       | href   | <%= product_url(Product.find_by_code("a001")) %> |
-      | method | get                 |
+      | method | get                                              |
 
   Scenario: Creating and placing an order
     When I go to the home page
@@ -58,4 +58,19 @@ Feature: REST interface
       | href   | <%= orders_url %>                      |
       | type   | application/vnd.rest-example.order+xml |
       | method | post                                   |
-    When I follow the "new" link
+    When I follow the "new" link with:
+      """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <order>
+        <line>
+          <product><%= product_url(Product.find_by_code("a001")) %></product>
+          <quantity>1</quantity>
+        </line>
+        <line>
+          <product><%= product_url(Product.find_by_code("a002")) %></product>
+          <quantity>2</quantity>
+        </line>
+      </order>
+      """
+    Then the response status should be "201 Created"
+    And the response content type should be "application/vnd.rest-example.order+xml"
