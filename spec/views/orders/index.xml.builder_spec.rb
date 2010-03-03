@@ -9,4 +9,8 @@ describe "orders/index.xml.builder" do
   it "renders an orders element with a URI" do
     @doc.xpath("/orders/@self").text.should == orders_url
   end
+
+  it "renders a 'new' link" do
+    response.should have_tag("link[rel=new][method=post][type=application/vnd.rest-example.order+xml][href=#{orders_url}]")
+  end
 end

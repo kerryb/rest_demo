@@ -28,13 +28,11 @@ Then %r{^the response should be an XML error "([^\"]*)"$} do |message|
   doc.xpath("/error").map(&:text).should == [message]
 end
 
-Then %r{^there should be an? (\S*) link:$} do |name, table|
+Then %r{^there should be an? "([^\"]*)" link:$} do |name, table|
   doc = Nokogiri::XML(response.body)
-  link = doc.xpath("//link[@rel='#{name}']").first
   attributes = Hash[*table.raw.flatten]
-  attributes.each do |name, value|
-    link[name].should == ERB.new(value).result(binding)
-  end
+  xpath = "//link[@rel='#{name}']" + attributes.map {|k,v| "[@#{k}='#{ERB.new(v).result(binding)}']"}.join
+  doc.xpath(xpath).size.should == 1
 end
 
 Then %r{^there should be an? ([^\"]*) media type ([^\"]*) link:$} do |name, type, table|
