@@ -5,7 +5,14 @@ class OrdersController < ApplicationController
   end
 
   def create
-    response.content_type = "application/vnd.rest-example.order+xml"
-    render :action => "show.xml.builder", :status => 201
+    body = request.body.read(request.content_length)
+    order = Order.create_from_xml body
+    if order
+      response.content_type = "application/vnd.rest-example.order+xml"
+      response.headers["Location"] = order_url(order)
+      render :action => "show.xml.builder", :status => 201
+    else
+      render_error 400, "Failed to create order"
+    end
   end
 end

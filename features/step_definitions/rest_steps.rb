@@ -9,7 +9,8 @@ end
 When %r{^I follow the "([^\"]*)" link with:$} do |label, body|
   doc = Nokogiri::XML(response.body)
   link = doc.xpath("//link[@rel='#{label}']").first
-  visit link.attributes["href"].text, link.attribute("method")
+  interpolated_body = ERB.new(body).result(binding)
+  visit link.attributes["href"].text, link.attribute("method"), interpolated_body
 end
 
 Then %r{^the response content type should be "([^\"]*)"$} do |content_type|

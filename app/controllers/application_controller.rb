@@ -7,4 +7,10 @@ class ApplicationController < ActionController::Base
 
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
+
+  def render_error status, message
+    response.content_type = "application/vnd.rest-example.error+xml"
+    @message = message
+    render :template => "/error.xml.builder", :status => status, :layout => false
+  end  
 end

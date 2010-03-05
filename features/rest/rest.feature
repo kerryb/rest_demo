@@ -43,6 +43,7 @@ Feature: REST interface
       | href   | <%= product_url(Product.find_by_code("a001")) %> |
       | method | get                                              |
 
+  @wip
   Scenario: Creating and placing an order
     When I go to the home page
     Then there should be an "orders" link:
@@ -74,3 +75,16 @@ Feature: REST interface
       """
     Then the response status should be "201 Created"
     And the response content type should be "application/vnd.rest-example.order+xml"
+    And the response should have a "Location" header
+    And the response should be an XML document matching:
+      | xpath                       | value                                            |
+      | /order/line[1]/product      | <%= product_url(Product.find_by_code("a001")) %> |
+      | /order/line[1]/quantity     | 1                                                |
+      | /order/line[1]/cost         | 1.23                                             |
+      | /order/line[2]/product      | <%= product_url(Product.find_by_code("a002")) %> |
+      | /order/line[2]/quantity     | 2                                                |
+      | /order/line[2]/cost         | 7.00                                             |
+      | /order/total                | 8.23                                             |
+    And there should be a "latest" link:
+      | href   | <%= order_url(Order.last) %> |
+      | method | get                          |
