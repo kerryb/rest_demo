@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Order do
   it {should have_db_column(:created_at).of_type(:datetime)}
   it {should have_db_column(:updated_at).of_type(:datetime)}
+  it {should have_many :order_lines}
 
   describe "creating from XML" do
     before do
