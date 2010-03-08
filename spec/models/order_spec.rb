@@ -9,10 +9,50 @@ describe Order do
   it {should have_many :order_lines}
 
   describe "creating from XML" do
-    describe "with valid XML" do
+    before do
+      @product_1 = Factory :product
+      @product_2 = Factory :product
+    end
+
+    describe "with valid XML containing no products" do
       before do
-        @product_1 = Factory :product
-        @product_2 = Factory :product
+        @xml = "<order/>"
+        @order = Order.create_from_xml @xml
+      end
+
+      it "creates and returns an order" do
+        @order.should_not be_new_record
+      end
+
+      it "adds no order lines" do
+        @order.order_lines.should be_empty
+      end
+    end
+
+    describe "with valid XML containing one product" do
+      before do
+        @xml = <<-"EOF"
+        <order>
+          <line>
+            <product>#{product_url(@product_1)}</product>
+            <quantity>1</quantity>
+          </line>
+        </order>
+        EOF
+        @order = Order.create_from_xml @xml
+      end
+
+      it "creates and returns an order" do
+        @order.should_not be_new_record
+      end
+
+      it "adds order lines" do
+        @order.order_lines.map{|l| [l.product, l.quantity]}.should =~ [[@product_1, 1]]
+      end
+    end
+
+    describe "with valid XML containing two products" do
+      before do
         @xml = <<-"EOF"
         <order>
           <line>
@@ -23,7 +63,7 @@ describe Order do
             <product>#{product_url(@product_2)}</product>
             <quantity>2</quantity>
           </line>
-        </order>")
+        </order>
         EOF
         @order = Order.create_from_xml @xml
       end
