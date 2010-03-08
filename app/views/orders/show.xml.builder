@@ -1,6 +1,7 @@
 xml.instruct!
 xml.order do
   xml.link :rel => "latest", :method => "get", :href => order_url(@order)
+  xml.link :rel => "cancel", :method => "delete", :href => order_url(@order)
   @order.order_lines.each do |line|
     xml.line do
       xml.product product_url(line.product)

@@ -87,3 +87,6 @@ Feature: REST interface
     And there should be a "latest" link:
       | href   | <%= order_url(Order.last) %> |
       | method | get                          |
+    And there should be a "cancel" link:
+      | href   | <%= order_url(Order.last) %> |
+      | method | delete                       |
