@@ -18,6 +18,7 @@ describe "orders/show.xml.builder" do
     response.should have_tag("order") do
       with_tag("link[rel=latest][method=get][href=#{order_url(@order)}]")
       with_tag("link[rel=cancel][method=delete][href=#{order_url(@order)}]")
+      with_tag("link[rel=pay][method=post][type=application/vnd.rest-example.payment-details+xml][href=#{order_url(@order)}/pay]")
       with_tag "line" do
         with_tag "product", :text => product_url(@foo)
         with_tag "quantity", :text => "1"

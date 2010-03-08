@@ -90,3 +90,7 @@ Feature: REST interface
     And there should be a "cancel" link:
       | href   | <%= order_url(Order.last) %> |
       | method | delete                       |
+    And there should be a "pay" link:
+      | href   | <%= order_url(Order.last) %>/pay                 |
+      | type   | application/vnd.rest-example.payment-details+xml |
+      | method | post                                             |
