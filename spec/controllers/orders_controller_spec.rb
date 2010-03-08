@@ -72,4 +72,29 @@ describe OrdersController do
       it_should_behave_like "an error"
     end
   end
+
+  describe "requesting show" do
+    before do
+      @order = Order.new
+      stub(@order).id {123}
+      stub(Order).find("123") {@order}
+      get :show, :id => "123"
+    end
+
+    it "assigns the order for the view" do
+      assigns[:order].should == @order
+    end
+
+    it "renders the show view" do
+      response.should render_template("show.xml.builder")
+    end
+
+    it "returns a content-type of application/vnd.rest-example.order+xml" do
+      response.content_type.should == "application/vnd.rest-example.order+xml"
+    end
+
+    it "returns a status of 200" do
+      response.response_code.should == 200
+    end
+  end
 end

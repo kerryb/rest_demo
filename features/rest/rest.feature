@@ -94,3 +94,9 @@ Feature: REST interface
       | href   | <%= order_url(Order.last) %>/pay                 |
       | type   | application/vnd.rest-example.payment-details+xml |
       | method | post                                             |
+    When I follow the "latest" link
+    Then the response status should be "200 OK"
+    And the response content type should be "application/vnd.rest-example.order+xml"
+    And the response should be an XML document matching:
+      | xpath                       | value                                            |
+      | /order/line[1]/product      | <%= product_url(Product.find_by_code("a001")) %> |

@@ -15,4 +15,10 @@ class OrdersController < ApplicationController
       render_error 400, "Failed to create order"
     end
   end
+
+  def show
+    @order = Order.find params[:id]
+    response.content_type = "application/vnd.rest-example.order+xml"
+    render :action => "show.xml.builder"
+  end
 end
