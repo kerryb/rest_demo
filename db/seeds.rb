@@ -5,3 +5,6 @@
 #   
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Major.create(:name => 'Daley', :city => cities.first)
+
+Product.create :code => "A-001", :description => "Tartan Paint", :price => "4.95"
+Product.create :code => "A-002", :description => "Long Weight", :price => "0.99"
