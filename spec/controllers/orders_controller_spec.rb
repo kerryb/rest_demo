@@ -38,6 +38,10 @@ describe OrdersController do
         post_with_body :create, @xml
       end
 
+      it "assigns the order for the view" do
+        assigns[:order].should == @order
+      end
+
       it "renders the show view" do
         response.should render_template("show.xml.builder")
       end

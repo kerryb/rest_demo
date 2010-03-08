@@ -43,7 +43,6 @@ Feature: REST interface
       | href   | <%= product_url(Product.find_by_code("a001")) %> |
       | method | get                                              |
 
-  @wip
   Scenario: Creating and placing an order
     When I go to the home page
     Then there should be an "orders" link:

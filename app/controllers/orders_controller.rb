@@ -6,10 +6,10 @@ class OrdersController < ApplicationController
 
   def create
     body = request.body.read(request.content_length)
-    order = Order.create_from_xml body
-    if order
+    @order = Order.create_from_xml body
+    if @order
       response.content_type = "application/vnd.rest-example.order+xml"
-      response.headers["Location"] = order_url(order)
+      response.headers["Location"] = order_url(@order)
       render :action => "show.xml.builder", :status => 201
     else
       render_error 400, "Failed to create order"

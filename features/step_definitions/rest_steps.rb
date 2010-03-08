@@ -28,7 +28,7 @@ end
 Then %r{^the response should be an XML document matching:$} do |table|
   doc = Nokogiri::XML(response.body)
   table.hashes.each do |hash|
-    doc.xpath(hash["xpath"]).text.should == hash["value"]
+    doc.xpath(hash["xpath"]).text.should == ERB.new(hash["value"]).result(binding)
   end
 end
 
